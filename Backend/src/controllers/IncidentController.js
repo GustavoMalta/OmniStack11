@@ -5,13 +5,17 @@ module.exports = {
     async create(req,res) {
     const {title, description, value} = req.body;
     const ong_id = req.headers.authorization;
+        try {
+            const [id] = await connection('incidents').insert({
+                title, ong_id, description, value,
+            });
+  
+        console.log(req.body);
+        return res.json({id, title, ong_id});
 
-    const [id] = await connection('incidents').insert({
-        title, ong_id, description, value,
-    });
-
-    console.log(req.body);
-    return res.json({id, title, ong_id});
+        } catch (error) {
+            return res.json(error)
+        }
     },
 
     async list(req,res) {

@@ -1,100 +1,72 @@
-import React from './node_modules/react';
-import {Link} from './node_modules/react-router-dom';
-import { FiPower, FiTrash2 } from './node_modules/react-icons/fi';
-
+import React, { useState } from 'react';
+import {Link, useHistory} from 'react-router-dom';
+import { FiArrowLeft } from 'react-icons/fi';
 import './style.css';
+
+import api from '../../services/api';
 import logo from '../../assets/logo.svg';
 
-export default function NewIncident(){
+export default function Newincident(){
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
+    const [value, setValor] = useState('');
+    const ongId = localStorage.getItem('ongId');
+    const history = useHistory();
+    let [valueshow, setshow] = useState('');
+
+    async function handleSubmit(e){
+        e.preventDefault();
+
+        const data = {title,description,value};
+                console.log(data);
+        try {
+            await api.post('incidents',data,{
+                headers:{authorization: ongId},
+                });
+            history.push('/profile');
+            return alert('Caso Cadastrado com sucesso!!');
+        } catch (err) {
+            return alert('Erro ao cadastrar o caso: '. err);
+        }
+    }
+
+
     return(
-        <div className="profile-indicent">
-            <header>
+        <div className="newincident-container">
+            <div className="content">
+                
+            <section>
                 <img src={logo} alt="Be the Hero"/>
-                <span>bem vindo, [nome da ong]</span>
-                <Link className="button" to="/">
-                    Cadastrar novo Caso
+                <h1> Cadstrar Novo Caso </h1>
+                <p>Faça seu cadastro, entre na plataforma e ajude pessoas a encontrarem os casos da sua ONG.</p>
+            
+                <Link className="back-link" to="/">
+                    <FiArrowLeft size={16} color="#e02041"/>Voltar apra home
                 </Link>
-                <button type="button">
-                    <FiPower size={18} color="#e02041"/>
-                </button>
-            </header>
+            </section>
+            <form onSubmit={handleSubmit}>
+                <input 
+                    placeholder="Titulo do caso"
+                    value={title}
+                    onChange={e=>setTitle(e.target.value)}
+                    />
+                <textarea 
+                    placeholder="Descrição"
+                    value={description}
+                    onChange={e=>setDescription(e.target.value)}
+                    />
+                <input 
+                    placeholder="Valor em Reais"
+                    value={value}
+                    type='number'
+                    pattern="[0-9]+([,\.][0-9]+)?" min="0"
+                    onChange={e=>setValor(e.target.value)}
+                    
+                    />
+                <button type="submit" className="button">Cadastrar</button>
+            </form>
 
-            <h1>Casos Cadastrados</h1>
-            <ul>
-                <li>
-                    <strong>Caso:</strong>
-                    <p>Caso teste</p>
-                    
-                    <strong>Desrição:</strong>
-                    <p>Descrição</p>
-                    
-                    <strong>Valor:</strong>
-                    <p>R$123,45</p>
-
-                    <button type="button">
-                        <FiTrash2 size={20} color="#a8a8b3"/>
-                    </button>
-                </li>
-                <li>
-                    <strong>Caso:</strong>
-                    <p>Caso teste</p>
-                    
-                    <strong>Desrição:</strong>
-                    <p>Descrição</p>
-                    
-                    <strong>Valor:</strong>
-                    <p>R$123,45</p>
-
-                    <button type="button">
-                        <FiTrash2 size={20} color="#a8a8b3"/>
-                    </button>
-                </li>
-                <li>
-                    <strong>Caso:</strong>
-                    <p>Caso teste</p>
-                    
-                    <strong>Desrição:</strong>
-                    <p>Descrição</p>
-                    
-                    <strong>Valor:</strong>
-                    <p>R$123,45</p>
-
-                    <button type="button">
-                        <FiTrash2 size={20} color="#a8a8b3"/>
-                    </button>
-                </li>
-                <li>
-                    <strong>Caso:</strong>
-                    <p>Caso teste</p>
-                    
-                    <strong>Desrição:</strong>
-                    <p>Descrição</p>
-                    
-                    <strong>Valor:</strong>
-                    <p>R$123,45</p>
-
-                    <button type="button">
-                        <FiTrash2 size={20} color="#a8a8b3"/>
-                    </button>
-                </li>
-                <li>
-                    <strong>Caso:</strong>
-                    <p>Caso teste</p>
-                    
-                    <strong>Desrição:</strong>
-                    <p>Descrição</p>
-                    
-                    <strong>Valor:</strong>
-                    <p>R$123,45</p>
-
-                    <button type="button">
-                        <FiTrash2 size={20} color="#a8a8b3"/>
-                    </button>
-                </li>
-            </ul>
-
+            </div>
         </div>
-
     );
-
 }
